@@ -45,8 +45,8 @@ def login() -> str:
     if AUTH.valid_login(email, password):
         session_id = AUTH.create_session(email)
         respons = make_response({"email": email, "message": "logged in"})
-        respons.set_cookie("session_id", value=s_id, domain="0.0.0.0",
-                       secure=False)
+        respons.set_cookie("session_id", value=session_id, domain="0.0.0.0",
+                            secure=False)
         return respons
     else:
         abort(401)
