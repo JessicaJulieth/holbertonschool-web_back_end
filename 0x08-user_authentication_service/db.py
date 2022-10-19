@@ -49,12 +49,13 @@ class DB:
             raise NoResultFound
         return query.first()
 
-    def update_user(self, user_id: int, **kwargs)-> None:
-        """Locate Users 
+    def update_user(self, user_id: int, **kwargs) -> None:
         """
-         _id = self.find_user_by(id=user_id)
+        Locate Users
+        """
+        session_id = self.find_user_by(id=user_id)
         for key, value in kwargs.items():
-            if not hasattr(_id, key):
+            if not hasattr(session_id, key):
                 raise ValueError
-            setattr(_id, key, value)
+            setattr(session_id, key, value)
         self._session.commit()
