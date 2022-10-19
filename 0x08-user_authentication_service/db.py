@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
-"""DB module
+"""
+Database module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-
-from user import Base
+from typing import TypeVar, Any
+from user import Base, User
 
 
 class DB:
