@@ -11,7 +11,7 @@ AUTH = Auth()
 
 
 @app.route('/', methods=['GET'], strict_slashes=False)
-def Bienvenue() -> str:
+def Bienvenue():
     """
     Return: JSON
     """
@@ -19,7 +19,7 @@ def Bienvenue() -> str:
 
 
 @app.route("/users", methods=['POST'], strict_slashes=False)
-def register() -> str:
+def register():
     """
     POST /users
     Return: JSON payload
@@ -34,7 +34,7 @@ def register() -> str:
 
 
 @app.route("/sessions", methods=['POST'], strict_slashes=False)
-def login() -> str:
+def login():
     """
     POST /sessions
     LOGIN
@@ -67,7 +67,7 @@ def logout():
 
 
 @app.route("/profile", methods=['GET'], strict_slashes=False)
-def profile() -> str:
+def profile():
     """
     GET /profile
     """
@@ -80,7 +80,7 @@ def profile() -> str:
 
 
 @app.route("/reset_password", methods=['POST'], strict_slashes=False)
-def get_reset_password_token() -> str:
+def get_reset_password_token():
     """
     POST /reset_password
     Returns:
@@ -95,7 +95,7 @@ def get_reset_password_token() -> str:
 
 
 @app.route("/reset_password", methods=['PUT'], strict_slashes=False)
-def update_password() -> str:
+def update_password():
     """
     PUT /reset_password
     Returns:
