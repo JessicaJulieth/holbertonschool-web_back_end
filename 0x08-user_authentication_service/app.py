@@ -99,13 +99,13 @@ def update_password():
         JSON payload
     """
     email = request.form.get("email")
-    reset_token = request.form.get("reset_token")
-    new_pass = request.form.get("new_pass")
+    token = request.form.get("reset_token")
+    password = request.form.get("new_pass")
     try:
-        AUTH.update_password(reset_token, new_pass)
-        return jsonify({"email": email, "message": "Password updated"}), 200
+        AUTH.update_password(token, password)
     except Exception:
         abort(403)
+    return jsonify({"email": email, "message": "Password updated"}), 200
 
 
 if __name__ == "__main__":
