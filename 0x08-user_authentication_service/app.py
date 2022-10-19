@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Basic Flask App,Register, etc
+"""
+Basic Flask App,Register, etc
 """
 
 from flask import Flask, jsonify, request, abort, make_response, redirect
@@ -9,7 +10,7 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
-@app.route("/", methods=['GET'])
+@app.route('/', methods=['GET'], strict_slashes=False)
 def Bienvenue() -> str:
     """
     Return: JSON
