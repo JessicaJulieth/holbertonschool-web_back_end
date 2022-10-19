@@ -34,23 +34,24 @@ class DB:
         return self.__session
 
     def add_user(self, email: str, hashed_password: str) -> User:
-        """Saves the user
+        """
+        Saves the user
         """
         user = User(email=email, hashed_password=hashed_password)
         self._session.add(user)
         self._session.commit()
         return user
 
-    def find_user_by(self, **filters: Any) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """
         Returns the first row
         """
-        if not User.__dict__.get(*filters):
+        if kwargs is None:
             raise InvalidRequestError
-        query = self._session.query(User).filter_by(**filters)
-        if not query.first():
+        user = self._session.query(User).filter_by(**kwargs).first()
+        if user is None:
             raise NoResultFound
-        return query.first()
+        return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """
