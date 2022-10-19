@@ -52,18 +52,17 @@ def login() -> str:
         abort(401)
 
 
-@app.route("/sessions", methods=['DELETE'], strict_slashes=False)
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
 def logout():
     """
-    DELETE /sessions
+    Log out
     """
-    session_id = request.cookies.get("session_id")
+    session_id = request.cookies.get('session_id')
     user = AUTH.get_user_from_session_id(session_id)
-    if user:
-        AUTH.destroy_session(user.id)
-        return redirect("/")
-    else:
+    if session_id is None or user is None:
         abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect('/')
 
 
 @app.route("/profile", methods=['GET'], strict_slashes=False)
@@ -109,19 +108,6 @@ def update_password() -> str:
         return jsonify({"email": email, "message": "Password updated"}), 200
     except Exception:
         abort(403)
-
-
-@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
-def logout():
-    """
-    Log out
-    """
-    session_id = request.cookies.get('session_id')
-    user = AUTH.get_user_from_session_id(session_id)
-    if session_id is None or user is None:
-        abort(403)
-    AUTH.destroy_session(user.id)
-    return redirect('/')
 
 
 if __name__ == "__main__":
