@@ -3,8 +3,8 @@
 """
 Async Generator
 """
-import asyncio
-import random
+from asyncio import sleep
+from random import random
 from typing import Generator
 
 
