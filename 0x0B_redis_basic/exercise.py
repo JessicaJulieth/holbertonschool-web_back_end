@@ -8,40 +8,6 @@ from typing import Union, Callable, Any, Optional
 from functools import wraps
 
 
-class Cache:
-    """
-    Create a Cache class. In the __init__ method,
-    store an instance of the Redis client as a
-    private variable named _redis (using redis.
-    Redis()) and flush the instance using flushdb
-    """
-    def __init__(self):
-        self._redis = redis.Redis()
-        self._redis.flushdb()
-
-    @call_history
-    @count_calls
-    def store(self, data: Union[str, bytes, int, float]) -> str:
-        """
-        Store method that takes a data argument and returns a string
-        """
-        key = str(uuid.uuid1())
-        self._redis.mset({key: data})
-        return key
-
-
-def get(self, key: str,
-        fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
-    """
-    Get method that take a key string argument and an optional
-    Callable argument named fn
-    """
-    if fn:
-        return fn(self._redis.get(key))
-    else:
-        return self._redis.get(key)
-
-
 def count_calls(method: Callable) -> Callable:
     """
     Create and return function that increments the count for that key
@@ -92,3 +58,36 @@ def replay(method: Callable):
     for i, o in tuple(zip(inputs, outputs)):
         print("{}(*('{}',)) -> {}".format(st_name, i.decode("utf-8"),
               o.decode("utf-8")))
+
+
+class Cache:
+    """
+    Create a Cache class. In the __init__ method,
+    store an instance of the Redis client as a
+    private variable named _redis (using redis.
+    Redis()) and flush the instance using flushdb
+    """
+    def __init__(self):
+        self._redis = redis.Redis()
+        self._redis.flushdb()
+
+    @call_history
+    @count_calls
+    def store(self, data: Union[str, bytes, int, float]) -> str:
+        """
+        Store method that takes a data argument and returns a string
+        """
+        key = str(uuid.uuid1())
+        self._redis.mset({key: data})
+        return key
+
+    def get(self, key: str,
+        fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+    """
+    Get method that take a key string argument and an optional
+    Callable argument named fn
+    """
+    if fn:
+        return fn(self._redis.get(key))
+    else:
+        return self._redis.get(key)
