@@ -3,8 +3,8 @@
 Writing strings to Redis
 """
 import redis
-import uuid
-from typing import Union, Callable, Any, Optional
+from uuid import uuid4
+from typing import Union, Callable, Optional
 from functools import wraps
 
 
@@ -17,10 +17,10 @@ def count_calls(method: Callable) -> Callable:
     key = method.__qualname__
 
     @wraps(method)
-    def wrapper(self, args):
-        k = method(self, args)
+    def wrapper(self, args, **kwargs):
+        ke = method(self, *args, **kwargs)
         self._redis.incr(key)
-        return k
+        return ke
 
     return wrapper
 
@@ -82,12 +82,12 @@ class Cache:
         return key
 
     def get(self, key: str,
-        fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
-    """
-    Get method that take a key string argument and an optional
-    Callable argument named fn
-    """
-    if fn:
-        return fn(self._redis.get(key))
-    else:
-        return self._redis.get(key)
+            fn: Optional[Callable] = None) -> Union[str, bytes, int, float]:
+        """
+        Get method that take a key string argument and an optional
+        Callable argument named fn
+        """
+        if fn:
+            return fn(self._redis.get(key))
+        else:
+            return self._redis.get(key)
