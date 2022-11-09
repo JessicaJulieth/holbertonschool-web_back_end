@@ -17,7 +17,7 @@ def count_calls(method: Callable) -> Callable:
     key = method.__qualname__
 
     @wraps(method)
-    def wrapper(self, args, **kwargs):
+    def wrapper(self, *args, **kwargs):
         ke = method(self, *args, **kwargs)
         self._redis.incr(key)
         return ke
@@ -31,24 +31,26 @@ def call_history(method: Callable) -> Callable:
     every time the method is called and returns the value returned by
     the original method.
     """
-    in_key = method.__qualname__ + ":inputs"
-    out_key = method.__qualname__ + ":outputs"
 
     @wraps(method)
-    def wrapper(self, *args):
-        self._redis.rpush(in_key, str(args))
-        res = method(self, *args)
-        self._redis.rpush(out_key, str(res))
-        return res
+    def wrapper(self, *args, **kwargs):
+        input = str(args)
+        self._redis.rpush(method.__qualname__ + ":inputs", input)
+
+        output = str(method(self, *args, **kwargs))
+        self._redis.rpush(method.__qualname__ + ":outputs", output)
+
+        return output
+
     return wrapper
 
 
-def replay(method: Callable):
+def replay(fn: Callable):
     """
     Function to display the history of calls of a particular function.
     """
     client = redis.Redis()
-    st_name = Cache.store.__qualname__
+    st_name = fn.__qualname__
 
     inputs = client.lrange("{}:inputs".format(st_name), 0, -1)
     outputs = client.lrange("{}:outputs".format(st_name), 0, -1)
@@ -77,8 +79,8 @@ class Cache:
         """
         Store method that takes a data argument and returns a string
         """
-        key = str(uuid.uuid1())
-        self._redis.mset({key: data})
+        key = str(uuid4())
+        self._redis.set({key: data})
         return key
 
     def get(self, key: str,
@@ -91,3 +93,20 @@ class Cache:
             return fn(self._redis.get(key))
         else:
             return self._redis.get(key)
+
+    def get_str(self, key: str) -> str:
+        """
+        Reading from Redis and recovering original type
+        """
+        return self._redis.get(key).decode('utf-8')
+
+    def get_int(self, key: str) -> int:
+        """
+        Reading from Redis and recovering original type
+        """
+        val = self._redis.get(key)
+        try:
+            val = int(val.decode('utf-8'))
+        except Exception:
+            val = 0
+        return val
