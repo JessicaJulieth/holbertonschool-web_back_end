@@ -1,4 +1,4 @@
---Write a SQL script that creates a stored procedure ComputeAverageScoreForUser
+-- Write a SQL script that creates a stored procedure ComputeAverageScoreForUser
 DROP PROCEDURE IF EXISTS ComputeAverageScoreForUser;
 DELIMITER |
 CREATE PROCEDURE ComputeAverageScoreForUser
