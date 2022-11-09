@@ -18,10 +18,9 @@ if __name__ == "__main__":
     print(f'{coll.count_documents({"path": "/status"})} status check')
     print('IPs:')
     ips = coll.aggregate([
-        { '$group':
-          { '_id': '$ip', 'count': { '$sum': 1 }}},
-        { '$sort': { 'count': -1 }},
-        { '$limit': 10 }
+        {'$group': {'_id': '$ip', 'count': {'$sum': 1}}},
+        {'$sort': {'count': -1}},
+        {'$limit': 10}
     ])
     for ip in ips:
         print(f'\t{ip.get("_id")}: {ip.get("count")}')
