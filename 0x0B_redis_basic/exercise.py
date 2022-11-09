@@ -18,9 +18,8 @@ def count_calls(method: Callable) -> Callable:
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        ke = method(self, *args, **kwargs)
         self._redis.incr(key)
-        return ke
+        return method(self, *args, **kwargs)
 
     return wrapper
 
@@ -49,17 +48,29 @@ def replay(fn: Callable):
     """
     Function to display the history of calls of a particular function.
     """
-    client = redis.Redis()
-    st_name = fn.__qualname__
+    re = redis.Redis()
+    f_name = fn.__qualname__
+    n_calls = re.get(f_name)
+    try:
+        n_calls = n_calls.decode('utf-8')
+    except Exception:
+        n_calls = 0
+    print(f'{f_name} was called {n_calls} times:')
 
-    inputs = client.lrange("{}:inputs".format(st_name), 0, -1)
-    outputs = client.lrange("{}:outputs".format(st_name), 0, -1)
+    ins = re.lrange(f_name + ":inputs", 0, -1)
+    outs = re.lrange(f_name + ":outputs", 0, -1)
 
-    print("{} was called {} times:".format(st_name,
-          client.get(st_name).decode("utf-8")))
-    for i, o in tuple(zip(inputs, outputs)):
-        print("{}(*('{}',)) -> {}".format(st_name, i.decode("utf-8"),
-              o.decode("utf-8")))
+    for i, o in zip(ins, outs):
+        try:
+            i = i.decode('utf-8')
+        except Exception:
+            i = ""
+        try:
+            o = o.decode('utf-8')
+        except Exception:
+            o = ""
+
+        print(f'{f_name}(*{i}) -> {o}')
 
 
 class Cache:
