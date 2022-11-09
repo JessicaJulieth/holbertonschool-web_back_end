@@ -8,7 +8,7 @@ from pymongo import MongoClient
 
 if __name__ == "__main__":
     coll = MongoClient("mongodb://127.0.0.1:27017").logs.nginx
-    print(f'{c.count_documents({})} logs')
+    print(f'{coll.count_documents({})} logs')
     print('Methods:')
     print(f'\tmethod GET: {coll.count_documents({"method": "GET"})}')
     print(f'\tmethod POST: {coll.count_documents({"method": "POST"})}')
