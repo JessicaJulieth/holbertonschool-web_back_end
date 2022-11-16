@@ -1,6 +1,6 @@
 import { uploadPhoto, createUser } from './utils';
 
-export default function handleProfileSignup() {
+function handleProfileSignup() {
   return Promise.all([
     uploadPhoto(),
     createUser(),
@@ -8,3 +8,4 @@ export default function handleProfileSignup() {
     console.log(values[0].body, values[1].firstName, values[1].lastName);
   }, () => console.log('Signup system offline'));
 }
+export default handleProfileSignup;
