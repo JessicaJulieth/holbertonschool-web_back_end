@@ -3,8 +3,8 @@
 Writing strings to Redis
 """
 import redis
+from typing import Union, Optional, Callable
 from uuid import uuid4, UUID
-from typing import Union, Callable, Optional
 from functools import wraps
 
 
