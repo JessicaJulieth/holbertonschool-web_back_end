@@ -54,17 +54,17 @@ def replay(fn: Callable):
     """
     Function to display the history of calls of a particular function.
     """
-    re = redis.Redis()
+    r = redis.Redis()
     f_name = fn.__qualname__
-    n_calls = re.get(f_name)
+    n_calls = r.get(f_name)
     try:
         n_calls = n_calls.decode('utf-8')
     except Exception:
         n_calls = 0
     print(f'{f_name} was called {n_calls} times:')
 
-    ins = re.lrange(f_name + ":inputs", 0, -1)
-    outs = re.lrange(f_name + ":outputs", 0, -1)
+    ins = r.lrange(f_name + ":inputs", 0, -1)
+    outs = r.lrange(f_name + ":outputs", 0, -1)
 
     for i, o in zip(ins, outs):
         try:
@@ -100,7 +100,8 @@ class Cache:
         Store method that takes a data argument and returns a string
         """
         key = str(uuid4())
-        self._redis.set({key: data})
+        self._redis.set(key, data)
+
         return key
 
     def get(self, key: str,
@@ -119,15 +120,16 @@ class Cache:
         """
         Reading from Redis and recovering original type
         """
-        return self._redis.get(key).decode('utf-8')
+        value = self._redis.get(key)
+        return value.decode("utf-8")
 
     def get_int(self, key: str) -> int:
         """
         Reading from Redis and recovering original type
         """
-        val = self._redis.get(key)
+        value = self._redis.get(key)
         try:
-            val = int(val.decode('utf-8'))
+            value = int(value.decode("utf-8"))
         except Exception:
-            val = 0
-        return val
+            value = 0
+        return value
