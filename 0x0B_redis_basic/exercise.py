@@ -3,7 +3,7 @@
 Writing strings to Redis
 """
 import redis
-from uuid import uuid4
+from uuid import uuid4, UUID
 from typing import Union, Callable, Optional
 from functools import wraps
 
@@ -18,6 +18,9 @@ def count_calls(method: Callable) -> Callable:
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
+        """
+        Function wrapper
+        """
         self._redis.incr(key)
         return method(self, *args, **kwargs)
 
@@ -33,6 +36,9 @@ def call_history(method: Callable) -> Callable:
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
+        """
+        Function wrapper
+        """
         input = str(args)
         self._redis.rpush(method.__qualname__ + ":inputs", input)
 
@@ -81,6 +87,9 @@ class Cache:
     Redis()) and flush the instance using flushdb
     """
     def __init__(self):
+        """
+        Function constructor
+        """
         self._redis = redis.Redis()
         self._redis.flushdb()
 
@@ -100,10 +109,11 @@ class Cache:
         Get method that take a key string argument and an optional
         Callable argument named fn
         """
+        value = self._redis.get(key)
         if fn:
-            return fn(self._redis.get(key))
-        else:
-            return self._redis.get(key)
+            value = fn(value)
+
+        return value
 
     def get_str(self, key: str) -> str:
         """
