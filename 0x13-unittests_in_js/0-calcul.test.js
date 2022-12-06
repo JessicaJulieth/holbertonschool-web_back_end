@@ -1,20 +1,15 @@
 const assert = require('assert');
-const calculateNumber = require("./0-calcul.js");
+const calculateNumber = require('./0-calcul');
 
 describe('calculateNumber', () => {
-  it('number plus round number', () => {
-    assert.equal(calculateNumber(1, 3.7), 5);
-  });
-  it('two round numbers', () => {
-    assert.equal(calculateNumber(1.2, 3.7), 5);
-  })
-  it('testing with zero', () => {
-    assert.equal(calculateNumber(0, 0), 0);
-    assert.equal(calculateNumber(0, 0.0), 0);
-  })
-  it('number of params', () => {
-    assert(isNaN(calculateNumber()));
-    assert(isNaN(calculateNumber(0,)));
-    assert(isNaN(calculateNumber(0)));
-  })
+    it('should add integers as expected', () => {
+        assert.strictEqual(calculateNumber(1, 2), 3);
+        assert.strictEqual(calculateNumber(1, -2), -1);
+    });
+
+    it('should round its arguments before addition', () => {
+        assert.strictEqual(calculateNumber(1.1, 2.1), 3);
+        assert.strictEqual(calculateNumber(1.4, 2.4), 3);
+        assert.strictEqual(calculateNumber(0.9, 2.4), 3);
+    });
 });
